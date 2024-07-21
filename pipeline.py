@@ -14,12 +14,17 @@ df.to_parquet(filename)
 engine = create_engine('postgresql://root:root@localhost:5432/ny_taxi')
 engine.connect()
 query ="""select 1 as num;"""
-test = pd.read_sql(query,con=engine)
+name = 'yellow_taxi'
+sql = f"select table_name from information_schema.tables where table_name='{name}'"
+test = pd.read_sql(sql,con=engine)
 print(test.head())
 df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
 df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
 
-df.head(n=0).to_sql(name='yellow_taxi', con=engine, if_exists='replace')
+if bool(len(test))==False:
+    df.head(n=0).to_sql(name=name, con=engine, if_exists= 'replace')
+else:
+    print("table is already exist {name}")
 
 #Reading file in batches:
 parquet_file = pq.ParquetFile(filename)
