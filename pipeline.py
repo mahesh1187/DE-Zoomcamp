@@ -23,9 +23,10 @@ df.head(n=0).to_sql(name='yellow_taxi', con=engine, if_exists='replace')
 
 #Reading file in batches:
 parquet_file = pq.ParquetFile(filename)
+i=1
 
 for batch in parquet_file.iter_batches(batch_size=100000):
-    print("Batch-{}".format(batch))
+    print("Batch-{}".format(i))
     batch_df = batch.to_pandas()
     t_start = time()
     batch_df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
@@ -33,6 +34,7 @@ for batch in parquet_file.iter_batches(batch_size=100000):
     batch_df.to_sql(name='yellow_taxi', con=engine, if_exists='append')
     t_end = time()
     print('inserted another chunk, took %.3f second' % (t_end - t_start))
+    i+=1
     
 
 
