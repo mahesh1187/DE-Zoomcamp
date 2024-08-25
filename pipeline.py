@@ -42,7 +42,7 @@ for batch in parquet_file.iter_batches(batch_size=100000):
     i+=1
     
 
-
+print(s= pd.io.sql.get_schema(df))
 
 
 
